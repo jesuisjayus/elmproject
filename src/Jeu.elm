@@ -2,7 +2,7 @@ module Jeu exposing(..)
 
 import Browser
 import Html exposing (..)
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (..)
 import Html exposing (Html, Attribute, div, input, text)
 import Html.Events exposing (..)
 import Http
@@ -23,7 +23,7 @@ main =
 
 -- MODEL
 
-type State = Failure | Loading | Success String
+type State = Failure String | Loading | Success String
 
 type alias Datas = { word : String, meanings : List Meaning}
 type alias Meaning = {partOfSpeech : String, definitions : List Definition}
@@ -34,15 +34,15 @@ type alias Model =
     , jSon : State
     , lWords : List String
     , word : String
-    , datas : List Datas 
+    , datas : List Datas
+    , content : String 
     }
-
 
 init : () -> (Model, Cmd Msg)
 init _ =
-  ( Model Loading Loading [] "" []
+  ( Model Loading Loading [] "" [] ""
   , Http.get
-      { url = "http://localhost:8000/src/thousand_words.txt"
+      { url = "http://localhost:8000/thousand_words.txt"
       , expect = Http.expectString GotWords
       }
   )
@@ -56,7 +56,7 @@ type Msg
   = GotWords (Result Http.Error String)
   | RandomWord Int
   | GotJson (Result Http.Error (List Datas))
-  
+  | Change String
 
   
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -67,8 +67,8 @@ update msg model =
         Ok words ->
           ({ model | lWords = String.words words , http = Success "" } , Random.generate RandomWord (Random.int 1 1000))
 
-        Err _ ->
-          ({model | http = Failure}, Cmd.none)
+        Err error ->
+          ({model | http = Failure (toString error)}, Cmd.none)
           
     RandomWord index -> case (getElementAtIndex model.lWords index) of
                                 Nothing -> (model, Cmd.none)
@@ -77,9 +77,9 @@ update msg model =
     GotJson result -> case result of
                             Ok data-> ({ model | jSon = Success "" , datas = data} , Cmd.none)
 
-                            Err _ -> ({ model | jSon = Failure } , Cmd.none)   
+                            Err error -> ({ model | jSon = Failure (toString error) } , Cmd.none)   
 
-
+    Change newContent -> ({model | content = newContent}, Cmd.none)
 
 -- SUBSCRIPTIONS
 
@@ -101,7 +101,7 @@ view model =
 viewWord : Model -> Html Msg
 viewWord model =
   case model.http of
-    Failure -> text "I was unable to load a word." 
+    Failure error -> text ("I was unable to load a word." ++ error) 
 
     Loading -> text "Loading..."
 
@@ -109,10 +109,20 @@ viewWord model =
       case model.jSon of
         Success veryGood -> textDatas model.datas
         Loading -> [text "Loading..."]
-        Failure -> [text "I was unable to load a definition."] )
+        Failure error -> [text ("I was unable to load the definition " ++ error)] )
 
 
 -- HELPERS
+
+toString : Http.Error -> String 
+toString erreur = 
+  case erreur of 
+    Http.BadUrl err -> "BadUrl" ++ err
+    Http.Timeout -> "Timeout"
+    Http.NetworkError -> "NetworkError"
+    Http.BadStatus err -> "BadStatus" ++ String.fromInt err
+    Http.BadBody err -> "BadBody" ++ err
+
 
 getElementAtIndex : List a -> Int -> Maybe a
 getElementAtIndex list index =
@@ -142,6 +152,8 @@ textDef def =
 overlay : Model -> List (Html Msg) -> Html Msg
 overlay model txt = 
   div [] txt
+  
+
           
 -- JSON 
 
@@ -155,5 +167,5 @@ meaningDecoder : Decoder Meaning
 meaningDecoder = map2 Meaning (field "partOfSpeech" string)(field "definitions" <| Json.Decode.list definitionDecoder)
 
 definitionDecoder : Decoder Definition
-definitionDecoder = Json.Decode.map Definition (field "defintition" string)
+definitionDecoder = Json.Decode.map Definition (field "definition" string)
           
