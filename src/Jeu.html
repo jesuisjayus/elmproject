@@ -6396,7 +6396,7 @@ var $elm$core$List$head = function (list) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$Jeu$getElementAtIndex = F2(
+var $author$project$Jeu$getElemList = F2(
 	function (list, index) {
 		return ((index < 0) || (_Utils_cmp(
 			index,
@@ -6531,7 +6531,7 @@ var $author$project$Jeu$update = F2(
 				}
 			case 'RandomWord':
 				var index = msg.a;
-				var _v2 = A2($author$project$Jeu$getElementAtIndex, model.lWords, index);
+				var _v2 = A2($author$project$Jeu$getElemList, model.lWords, index);
 				if (_v2.$ === 'Nothing') {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				} else {

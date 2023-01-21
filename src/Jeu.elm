@@ -70,7 +70,7 @@ update msg model =
         Err error ->
           ({model | http = Failure (toString error)}, Cmd.none)
           
-    RandomWord index -> case (getElementAtIndex model.lWords index) of
+    RandomWord index -> case (getElemList model.lWords index) of
                                 Nothing -> (model, Cmd.none)
                                 Just x -> ({ model | word = x }, Http.get {url = ("https://api.dictionaryapi.dev/api/v2/entries/en/" ++ x)  , expect = Http.expectJson GotJson lDatasDecoder})
      
@@ -124,8 +124,8 @@ toString erreur =
     Http.BadBody err -> "BadBody" ++ err
 
 
-getElementAtIndex : List a -> Int -> Maybe a
-getElementAtIndex list index =
+getElemList : List a -> Int -> Maybe a
+getElemList list index =
     if index < 0 || index >= List.length list then
         Nothing
     else
