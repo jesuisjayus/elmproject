@@ -3,7 +3,7 @@ module Jeu exposing(..)
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html exposing (Html, Attribute, div, input, text)
+import Html exposing (Html, Attribute, div, input, text, button)
 import Html.Events exposing (..)
 import Http
 import Random 
@@ -151,7 +151,22 @@ textDef def =
     
 overlay : Model -> List (Html Msg) -> Html Msg
 overlay model txt = 
-  div [] txt
+  div [] 
+      [
+       div [style "text-align" "left"]
+         txt
+       , div [style "text-align" "center"]
+         [ div []
+            [input [placeholder "Try to guess the word", Html.Attributes.value model.content, onInput Change] [] 
+            ,
+            if String.toLower model.content == String.toLower model.word then
+               div[style "color" "green" ] [text "You guess it !"]
+            else
+               div [] [text ("You typed " ++ model.content) ]
+            ]
+         ]
+      ]
+    
   
 
           
@@ -168,4 +183,4 @@ meaningDecoder = map2 Meaning (field "partOfSpeech" string)(field "definitions" 
 
 definitionDecoder : Decoder Definition
 definitionDecoder = Json.Decode.map Definition (field "definition" string)
-          
+                  
