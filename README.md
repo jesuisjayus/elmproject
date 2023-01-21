@@ -1,11 +1,11 @@
-# elmproject
+# [elmproject](https://guessitbgs.000webhostapp.com/ "Guess It !")
 
 ###### _Nicolas BLOCH [nicolas.bloch@insa-lyon.fr] Aurélien GIRIN [aurelien.girin@insa-lyon.fr] Mody Sory SOW [mody.sow@insa-lyon.fr]_
 
 ### Project Description
 
 This teamwork was carried out within the framework of the ELP project (___E___*cosystèmes des* ___L___*angages de* ___P___*rogrammation*, programming 
-language ecosystems) taught in the telecommunication department of INSA Lyon. ([more about 
+language ecosystems) taught in the telecommunication department of INSA Lyon. ([more about ELM project](https://github.com/troussil/elp/tree/master/elm/projet))
 
 
 The aim of this project is to learn the basics of 3 programming languages([JS](https://github.com/jesuisjayus/jsproject "jsproject"),[Go](https://github.com/jesuisjayus/goproject "goproject") & ELM) and to produce a functional program.
