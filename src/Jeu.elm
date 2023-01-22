@@ -135,7 +135,7 @@ textDatas : (List Datas) -> List (Html Msg)
 textDatas datas = 
   case datas of 
     [] -> []
-    (x :: xs) -> [li [] ([text "Definitions"] ++ [ul [] (textMeaning x.meanings)])] ++ (textDatas xs)
+    (x :: xs) -> [li [] ([text "Definition"] ++ [ul [] (textMeaning x.meanings)])] ++ (textDatas xs)
     
 textMeaning : List Meaning -> List (Html Msg)
 textMeaning meanings = 
@@ -160,7 +160,7 @@ overlay model txt =
             [input [placeholder "Try to guess the word", Html.Attributes.value model.content, onInput Change] [] 
             ,
             if String.toLower model.content == String.toLower model.word then
-               div[style "color" "green" ] [text "You guess it !"]
+               div[style "color" "green" ] [text "You guessed it !"]
             else
                div [] [text ("You typed " ++ model.content) ]
             ]
