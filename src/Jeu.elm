@@ -94,7 +94,7 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
   div [style "text-align" "center"]
-    [ h1 [] [ text "Guess it !" ]
+    [ h1 [style "font-size" "300%", style "color" "blue", style "font-family" "verdana"] [ text "Guess it !" ]
     , viewWord model
     ]
 
@@ -135,7 +135,7 @@ textDatas : (List Datas) -> List (Html Msg)
 textDatas datas = 
   case datas of 
     [] -> []
-    (x :: xs) -> [li [] ([text "Definition"] ++ [ul [] (textMeaning x.meanings)])] ++ (textDatas xs)
+    (x :: xs) -> [li [style "margin-left" "50px"] ([text "Definition"] ++ [ul [] (textMeaning x.meanings)])] ++ (textDatas xs)
     
 textMeaning : List Meaning -> List (Html Msg)
 textMeaning meanings = 
@@ -160,7 +160,12 @@ overlay model txt =
             [input [placeholder "Try to guess the word", Html.Attributes.value model.content, onInput Change] [] 
             ,
             if String.toLower model.content == String.toLower model.word then
-               div[style "color" "green" ] [text "You guessed it !"]
+              div []
+              [
+               div[style "color" "green"] [text "You guessed it !"]
+               , 
+               img [ src "http://localhost:8000/congrats.gif"] []
+              ]
             else
                div [] [text ("You typed " ++ model.content) ]
             ]
