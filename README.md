@@ -15,7 +15,7 @@ As far as ELM project is concerned, we had to create a little guessing game. The
 
 ### How to run and use the program 
 
-0. First, make sure ELM is install on your device (if not, check this [page](https://guide.elm-lang.org/install/elm.html))
+0. First, make sure ELM is installed on your device (if not, check this [page](https://guide.elm-lang.org/install/elm.html))
 1. Download the code and unzip it
 2. Go in __src__ file and open a terminal
 3. Type `elm reactor` and open [http://localhost:8000](http://localhost:8000)
