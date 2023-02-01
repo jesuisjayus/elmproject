@@ -35,12 +35,13 @@ type alias Model =
     , lWords : List String
     , word : String
     , datas : List Datas
-    , content : String 
+    , content : String
+    , title : String
     }
 
 init : () -> (Model, Cmd Msg)
 init _ =
-  ( Model Loading Loading [] "" [] ""
+  ( Model Loading Loading [] "" [] "" "Guess It !"
   , Http.get
       { url = "http://localhost:8000/thousand_words.txt"
       , expect = Http.expectString GotWords
@@ -57,6 +58,7 @@ type Msg
   | RandomWord Int
   | GotJson (Result Http.Error (List Datas))
   | Change String
+  | ViewWord String
 
   
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -81,6 +83,12 @@ update msg model =
 
     Change newContent -> ({model | content = newContent}, Cmd.none)
 
+    ViewWord word -> if model.title == model.word then
+                       ({model | title = "Guess It !"}, Cmd.none)
+                     else
+                       ({model | title = word}, Cmd.none)
+
+
 -- SUBSCRIPTIONS
 
 
@@ -94,7 +102,7 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
   div [style "text-align" "center"]
-    [ h1 [style "font-size" "300%", style "color" "blue", style "font-family" "verdana"] [ text "Guess it !" ]
+    [ h1 [style "font-size" "300%", style "color" "blue", style "font-family" "verdana"] [ text model.title ]
     , viewWord model
     ]
 
@@ -168,6 +176,8 @@ overlay model txt =
               ]
             else
                div [] [text ("You typed " ++ model.content) ]
+            ,
+             button [ onClick (ViewWord model.word) ] [ text "Show word" ]
             ]
          ]
       ]

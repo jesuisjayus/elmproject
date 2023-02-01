@@ -5435,9 +5435,9 @@ var $author$project$Jeu$GotWords = function (a) {
 	return {$: 'GotWords', a: a};
 };
 var $author$project$Jeu$Loading = {$: 'Loading'};
-var $author$project$Jeu$Model = F6(
-	function (http, jSon, lWords, word, datas, content) {
-		return {content: content, datas: datas, http: http, jSon: jSon, lWords: lWords, word: word};
+var $author$project$Jeu$Model = F7(
+	function (http, jSon, lWords, word, datas, content, title) {
+		return {content: content, datas: datas, http: http, jSon: jSon, lWords: lWords, title: title, word: word};
 	});
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
@@ -6220,7 +6220,7 @@ var $elm$http$Http$get = function (r) {
 };
 var $author$project$Jeu$init = function (_v0) {
 	return _Utils_Tuple2(
-		A6($author$project$Jeu$Model, $author$project$Jeu$Loading, $author$project$Jeu$Loading, _List_Nil, '', _List_Nil, ''),
+		A7($author$project$Jeu$Model, $author$project$Jeu$Loading, $author$project$Jeu$Loading, _List_Nil, '', _List_Nil, '', 'Guess It !'),
 		$elm$http$Http$get(
 			{
 				expect: $elm$http$Http$expectString($author$project$Jeu$GotWords),
@@ -6569,12 +6569,23 @@ var $author$project$Jeu$update = F2(
 							}),
 						$elm$core$Platform$Cmd$none);
 				}
-			default:
+			case 'Change':
 				var newContent = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{content: newContent}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var word = msg.a;
+				return _Utils_eq(model.title, model.word) ? _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{title: 'Guess It !'}),
+					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{title: word}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -6587,15 +6598,35 @@ var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Jeu$Change = function (a) {
 	return {$: 'Change', a: a};
 };
+var $author$project$Jeu$ViewWord = function (a) {
+	return {$: 'ViewWord', a: a};
+};
+var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$img = _VirtualDom_node('img');
 var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
 var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
 	return {$: 'MayStopPropagation', a: a};
 };
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
 var $elm$html$Html$Events$stopPropagationOn = F2(
 	function (event, decoder) {
 		return A2(
@@ -6704,6 +6735,17 @@ var $author$project$Jeu$overlay = F2(
 									_List_fromArray(
 										[
 											$elm$html$Html$text('You typed ' + model.content)
+										])),
+									A2(
+									$elm$html$Html$button,
+									_List_fromArray(
+										[
+											$elm$html$Html$Events$onClick(
+											$author$project$Jeu$ViewWord(model.word))
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Show word')
 										]))
 								]))
 						]))
@@ -6844,7 +6886,7 @@ var $author$project$Jeu$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Guess it !')
+						$elm$html$Html$text(model.title)
 					])),
 				$author$project$Jeu$viewWord(model)
 			]));
